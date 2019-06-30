@@ -4,34 +4,35 @@ import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.Socket;
-import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Random;
-import java.util.concurrent.Callable;
 
 public class ClientConnexion implements Runnable {
 
 	private Socket connexion = null;
 	private PrintWriter writer = null;
 	private BufferedInputStream reader = null;
+	private int nbThrows;
+	private int nbWorker;
 
 	private static int count = 0;
 	private String name = "Client-";
 	private String host;
 	private int port;
 
-	public ClientConnexion(String host, int port) {
+	public ClientConnexion(String host, int port, int nbThrows, int nbWorker) {
 		name += ++count;
 		this.host = host;
 		this.port = port;
+		this.nbThrows = nbThrows;
+		this.nbWorker = nbWorker;
 	}
 
 	public void run() {
 		long startTimeGlobal = System.nanoTime();
 		List<Long> nbAleatoireMC = new ArrayList<>();
-		for (int i = 0; i < Main.nbWorker; i++) {
+		for (int i = 0; i < nbWorker; i++) {
 			/*
 			try {
 				Thread.currentThread().sleep(1000);
@@ -46,7 +47,7 @@ public class ClientConnexion implements Runnable {
 				reader = new BufferedInputStream(connexion.getInputStream());
 				// On envoie la commande au serveur
 
-				String commande = "PI";
+				String commande = "PI;" + nbThrows/nbWorker;
 
 				writer.write(commande);
 
@@ -64,7 +65,7 @@ public class ClientConnexion implements Runnable {
 				connexion.close();
 				long stopTime = System.nanoTime();
 				System.out.println("Time Duration: " + (stopTime - startTime)
-						/ 100000 + "ms");
+						/ 1000000 + "ms");
 			} catch (IOException e1) {
 				e1.printStackTrace();
 			}
@@ -85,13 +86,13 @@ public class ClientConnexion implements Runnable {
 		}
 
 		// calcule de PI
-		double pi = 4.0 * (double) nbAleatoireMCTotal/ (100000 * Main.nbWorker);
+		double pi = 4.0 * (double) nbAleatoireMCTotal/ (nbThrows);
 		
 		long stopTimeGlobal = System.nanoTime();
 		
 		System.out.println("Pi : " + pi);
 		System.out.println("Time Duration Global: " + (stopTimeGlobal - startTimeGlobal)
-				/ 100000 + "ms");
+				/ 1000000 + "ms");
 	}
 
 	private String read() throws IOException {

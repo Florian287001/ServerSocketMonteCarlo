@@ -63,8 +63,6 @@ public class Server {
 
 						System.out.println("Connexion cliente reçue.");
 
-						int totalcount = 100000;
-
 						while (!client.isClosed()) {
 
 							try {
@@ -98,7 +96,9 @@ public class Server {
 								// envoyée
 								String toSend = "";
 
-								switch (response.toUpperCase()) {
+								String[] s = response.toUpperCase().split(";");
+
+								switch (s[0]) {
 								case "PI":
 
 									try {
@@ -106,25 +106,24 @@ public class Server {
 										// Traitement avec la Methode de
 										// Monte-Carlo
 
-										float timeMoyExecutionAlgo;
+										int totalcount = Integer.parseInt(s[1]);
+										//float timeMoyExecutionParThrowTot = 0;
 										long startTimeThrow = System.nanoTime();
 										long circleCount = 0;
 										Random prng = new Random();
 										for (int j = 0; j < totalcount; j++) {
-											long startTimeAlgo = System
-													.nanoTime();
+											//long startTimeThrowBoucle = System.nanoTime();
 											double x = prng.nextDouble();
 											double y = prng.nextDouble();
 											if ((x * x + y * y) < 1)
 												++circleCount;
-											long endTimeThrow = System
-													.nanoTime();
-											timeMoyExecutionAlgo = (float) (endTimeThrow - startTimeAlgo) / 100000;
+											//long endTimeThrowBoucle = System.nanoTime();
+											//float timeMoyExecutionParThrow = (float) (endTimeThrowBoucle - startTimeThrowBoucle) / 100;
 										}
 										long endTimeThrow = System.nanoTime();
-										float timeMoyExecutionParThrow = (float) (endTimeThrow - startTimeThrow) / 100000;
-										System.out
-												.println(timeMoyExecutionParThrow);
+										float timeMoyExecutionParThrow = (float) (endTimeThrow - startTimeThrow) / 1000000;
+										System.out.println(timeMoyExecutionParThrow + "ms");
+										System.out.println((timeMoyExecutionParThrow*1000)/totalcount + "us");
 
 										// Renvoie du résultat
 

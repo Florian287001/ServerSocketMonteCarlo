@@ -1,13 +1,11 @@
 package fr.Florian287001.serverSocketPI;
 
-import java.io.IOException;
-import java.net.ServerSocket;
-
 import fr.Florian287001.serverSocketPI.server.Server;
 
 public class Main {
 
-	public static int nbWorker = 5;
+	private static int nbWorker = 4;
+	private static int nbThrows = 100000;
 	
 	public static void main(String[] args) {
 		/*
@@ -28,8 +26,7 @@ public class Main {
 		System.out.println("Serveur initialisé.");
 
 		// Démarrage du client
-		int nbThrows = 100000;
-		Thread t = new Thread(new ClientConnexion(host, port));
+		Thread t = new Thread(new ClientConnexion(host, port, nbThrows, nbWorker));
 		t.start();
 		
 
